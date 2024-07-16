@@ -67,7 +67,7 @@
 <body>
     <div class="container">
         <img src="https://lh3.googleusercontent.com/drive-viewer/AKGpihZwk5DjrsFynb1Oasj4giFi2xlxJodeYknzH1ZOHF4v4h4asOH4XC_UJAArpmLBKIBXK4NasFrlt0jV0xxcCK5KqF6G2U92c4s=s2560" alt="Logo" class="logo">
-        <h1>Hairi Online Shop</h1>
+        <h1>Stock Management System</h1>
         
         <div class="password-container" id="password-container">
             <label for="password">Enter Password to Update Stock: </label>
@@ -93,55 +93,15 @@
                 <th>Item Code</th>
                 <th>Stock Quantity</th>
             </tr>
-            <tr><td>M01</td><td id="M01">3</td></tr>
-            <tr><td>M02</td><td id="M02">7</td></tr>
-            <tr><td>M03</td><td id="M03">8</td></tr>
-            <tr><td>M04</td><td id="M04">7</td></tr>
-            <tr><td>M05</td><td id="M05">4</td></tr>
-            <tr><td>M06</td><td id="M06">1</td></tr>
-            <tr><td>M07</td><td id="M07">2</td></tr>
-            <tr><td>M08</td><td id="M08">0</td></tr>
-            <tr><td>M09</td><td id="M09">8</td></tr>
-            <tr><td>M10</td><td id="M10">5</td></tr>
-            <tr><td>M11</td><td id="M11">6</td></tr>
-            <tr><td>M12</td><td id="M12">7</td></tr>
-            <tr><td>M13</td><td id="M13">4</td></tr>
-            <tr><td>M14</td><td id="M14">9</td></tr>
-            <tr><td>M15</td><td id="M15">2</td></tr>
-            <tr><td>M16</td><td id="M16">3</td></tr>
-            <tr><td>W01</td><td id="W01">5</td></tr>
-            <tr><td>W02</td><td id="W02">6</td></tr>
-            <tr><td>W03</td><td id="W03">7</td></tr>
-            <tr><td>W04</td><td id="W04">8</td></tr>
-            <tr><td>W05</td><td id="W05">4</td></tr>
-            <tr><td>W06</td><td id="W06">3</td></tr>
-            <tr><td>W07</td><td id="W07">6</td></tr>
-            <tr><td>W08</td><td id="W08">7</td></tr>
-            <tr><td>W09</td><td id="W09">8</td></tr>
-            <tr><td>W10</td><td id="W10">5</td></tr>
-            <tr><td>W11</td><td id="W11">6</td></tr>
-            <tr><td>W12</td><td id="W12">7</td></tr>
-            <tr><td>W13</td><td id="W13">4</td></tr>
-            <tr><td>W14</td><td id="W14">8</td></tr>
-            <tr><td>W15</td><td id="W15">9</td></tr>
-            <tr><td>W16</td><td id="W16">2</td></tr>
-            <tr><td>W17</td><td id="W17">0</td></tr>
-            <tr><td>W18</td><td id="W18">5</td></tr>
-            <tr><td>W19</td><td id="W19">8</td></tr>
-            <tr><td>W20</td><td id="W20">6</td></tr>
-            <tr><td>W21</td><td id="W21">3</td></tr>
-            <tr><td>W22</td><td id="W22">2</td></tr>
-            <tr><td>W23</td><td id="W23">4</td></tr>
-            <tr><td>W24</td><td id="W24">5</td></tr>
-            <tr><td>W25</td><td id="W25">6</td></tr>
-            <tr><td>W26</td><td id="W26">7</td></tr>
+            <!-- Your stock items here -->
         </table>
 
         <button class="order-button" onclick="location.href='https://wa.me/60137914798'">Order Sekarang</button>
     </div>
 
     <script>
-        // Function to check the password
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzp1J9pEIOMFLEoJRoHvVF9m_Q1KX7cdUcBRzKkUZejPKPHA0LaATIJ0j04bYyfZJ78/exec';
+
         function checkPassword() {
             var password = document.getElementById("password").value;
             if (password === "hairi123") {
@@ -152,14 +112,13 @@
             }
         }
 
-        // Function to update stock and save to local storage
         function updateStock() {
             var itemCode = document.getElementById("item-code").value.toUpperCase();
             var itemQuantity = parseInt(document.getElementById("item-quantity").value);
 
             if (document.getElementById(itemCode)) {
                 document.getElementById(itemCode).innerText = itemQuantity;
-                saveToLocalStorage(itemCode, itemQuantity);
+                saveStock(itemCode, itemQuantity);
                 alert("Stock updated for " + itemCode);
                 updateTotalStock();
             } else {
@@ -167,24 +126,43 @@
             }
         }
 
-        // Function to save stock to local storage
-        function saveToLocalStorage(itemCode, itemQuantity) {
-            var stockData = JSON.parse(localStorage.getItem('stockData')) || {};
-            stockData[itemCode] = itemQuantity;
-            localStorage.setItem('stockData', JSON.stringify(stockData));
-        }
-
-        // Function to load stock from local storage
-        function loadFromLocalStorage() {
-            var stockData = JSON.parse(localStorage.getItem('stockData')) || {};
-            for (var itemCode in stockData) {
-                if (document.getElementById(itemCode)) {
-                    document.getElementById(itemCode).innerText = stockData[itemCode];
+        function saveStock(itemCode, itemQuantity) {
+            fetch(scriptURL + '?action=update&itemCode=' + itemCode + '&quantity=' + itemQuantity, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Stock updated successfully');
+                } else {
+                    console.error('Error updating stock:', data.message);
                 }
-            }
+            });
         }
 
-        // Function to update total stock value
+        function loadStock() {
+            fetch(scriptURL + '?action=get')
+                .then(response => response.json())
+                .then(data => {
+                    for (var itemCode in data) {
+                        if (document.getElementById(itemCode)) {
+                            document.getElementById(itemCode).innerText = data[itemCode];
+                        } else {
+                            var row = document.createElement('tr');
+                            var codeCell = document.createElement('td');
+                            var quantityCell = document.createElement('td');
+                            codeCell.innerText = itemCode;
+                            quantityCell.innerText = data[itemCode];
+                            quantityCell.id = itemCode;
+                            row.appendChild(codeCell);
+                            row.appendChild(quantityCell);
+                            document.getElementById('stock-table').appendChild(row);
+                        }
+                    }
+                    updateTotalStock();
+                });
+        }
+
         function updateTotalStock() {
             var totalStock = 0;
             document.querySelectorAll('.stock-table td[id]').forEach(function(element) {
@@ -193,10 +171,8 @@
             document.getElementById("current-stock").value = totalStock;
         }
 
-        // Load stock data from local storage on page load
         window.onload = function() {
-            loadFromLocalStorage();
-            updateTotalStock();
+            loadStock();
         };
     </script>
 </body>
