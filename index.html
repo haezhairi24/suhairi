@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management System</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1F1C2C 0%, #928DAB 100%); /* Gradient background */
+            color: #FFFFFF; /* White text color for better contrast */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background for better readability */
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+        .stock-table, .stock-table th, .stock-table td {
+            border: 1px solid #FFFFFF; /* White border for better visibility */
+            border-collapse: collapse;
+            padding: 8px;
+            text-align: center;
+        }
+        .stock-table {
+            width: 100%;
+            margin: 20px 0;
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+        .form-container, .password-container {
+            margin: 20px 0;
+        }
+        .order-button, .show-form-button {
+            background-color: #FF5733; /* Orange color */
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .order-button:hover, .show-form-button:hover {
+            background-color: #C70039; /* Darker shade on hover */
+        }
+        .form-container {
+            display: none; /* Hide the form by default */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://lh3.googleusercontent.com/drive-viewer/AKGpihZwk5DjrsFynb1Oasj4giFi2xlxJodeYknzH1ZOHF4v4h4asOH4XC_UJAArpmLBKIBXK4NasFrlt0jV0xxcCK5KqF6G2U92c4s=s2560" alt="Logo" class="logo">
+        <h1>Stock Management System</h1>
+        
+        <div class="password-container" id="password-container">
+            <label for="password">Enter Password to Update Stock: </label>
+            <input type="password" id="password">
+            <button onclick="checkPassword()">Submit</button>
+        </div>
+
+        <div class="form-container" id="update-form">
+            <label for="current-stock">Stock Semasa: </label>
+            <input type="number" id="current-stock" value="0" disabled>
+            <br><br>
+            <label for="item-code">Update Stock</label>
+            <br>
+            <label for="item-code">Item: </label>
+            <input type="text" id="item-code">
+            <label for="item-quantity">Stock: </label>
+            <input type="number" id="item-quantity">
+            <button onclick="updateStock()">Enter</button>
+        </div>
+        
+        <table class="stock-table">
+            <tr>
+                <th>Item Code</th>
+                <th>Stock Quantity</th>
+            </tr>
+            <tr><td>M01</td><td id="M01">3</td></tr>
+            <tr><td>M02</td><td id="M02">7</td></tr>
+            <tr><td>M03</td><td id="M03">8</td></tr>
+            <tr><td>M04</td><td id="M04">7</td></tr>
+            <tr><td>M05</td><td id="M05">4</td></tr>
+            <tr><td>M06</td><td id="M06">1</td></tr>
+            <tr><td>M07</td><td id="M07">2</td></tr>
+            <tr><td>M08</td><td id="M08">0</td></tr>
+            <tr><td>M09</td><td id="M09">8</td></tr>
+            <tr><td>M10</td><td id="M10">5</td></tr>
+            <tr><td>M11</td><td id="M11">6</td></tr>
+            <tr><td>M12</td><td id="M12">7</td></tr>
+            <tr><td>M13</td><td id="M13">4</td></tr>
+            <tr><td>M14</td><td id="M14">9</td></tr>
+            <tr><td>M15</td><td id="M15">2</td></tr>
+            <tr><td>M16</td><td id="M16">3</td></tr>
+            <tr><td>W01</td><td id="W01">5</td></tr>
+            <tr><td>W02</td><td id="W02">6</td></tr>
+            <tr><td>W03</td><td id="W03">7</td></tr>
+            <tr><td>W04</td><td id="W04">8</td></tr>
+            <tr><td>W05</td><td id="W05">4</td></tr>
+            <tr><td>W06</td><td id="W06">3</td></tr>
+            <tr><td>W07</td><td id="W07">6</td></tr>
+            <tr><td>W08</td><td id="W08">7</td></tr>
+            <tr><td>W09</td><td id="W09">8</td></tr>
+            <tr><td>W10</td><td id="W10">5</td></tr>
+            <tr><td>W11</td><td id="W11">6</td></tr>
+            <tr><td>W12</td><td id="W12">7</td></tr>
+            <tr><td>W13</td><td id="W13">4</td></tr>
+            <tr><td>W14</td><td id="W14">8</td></tr>
+            <tr><td>W15</td><td id="W15">9</td></tr>
+            <tr><td>W16</td><td id="W16">2</td></tr>
+            <tr><td>W17</td><td id="W17">0</td></tr>
+            <tr><td>W18</td><td id="W18">5</td></tr>
+            <tr><td>W19</td><td id="W19">8</td></tr>
+            <tr><td>W20</td><td id="W20">6</td></tr>
+            <tr><td>W21</td><td id="W21">3</td></tr>
+            <tr><td>W22</td><td id="W22">2</td></tr>
+            <tr><td>W23</td><td id="W23">4</td></tr>
+            <tr><td>W24</td><td id="W24">5</td></tr>
+            <tr><td>W25</td><td id="W25">6</td></tr>
+            <tr><td>W26</td><td id="W26">7</td></tr>
+        </table>
+
+        <button class="order-button" onclick="location.href='https://wa.me/60137914798'">Order Sekarang</button>
+    </div>
+
+    <script>
+        function checkPassword() {
+            var password = document.getElementById("password").value;
+            if (password === "hairi123") {
+                document.getElementById("password-container").style.display = "none";
+                document.getElementById("update-form").style.display = "block";
+            } else {
+                alert("Incorrect password");
+            }
+        }
+
+        function updateStock() {
+            var itemCode = document.getElementById("item-code").value.toUpperCase();
+            var itemQuantity = parseInt(document.getElementById("item-quantity").value);
+
+            if (document.getElementById(itemCode)) {
+                document.getElementById(itemCode).innerText = itemQuantity;
+                alert("Stock updated for " + itemCode);
+                updateTotalStock();
+            } else {
+                alert("Invalid item code");
+            }
+        }
+
+        function updateTotalStock() {
+            var totalStock = 0;
+            document.querySelectorAll('.stock-table td[id]').forEach(function(element) {
+                totalStock += parseInt(element.innerText);
+            });
+            document.getElementById("current-stock").value = totalStock;
+        }
+
+        updateTotalStock(); // Initialize the total stock value
+    </script>
+</body>
+</html>
