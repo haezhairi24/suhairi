@@ -6,8 +6,8 @@
     <title>Stock Management System</title>
     <style>
         body {
-            background: linear-gradient(135deg, #1F1C2C 0%, #928DAB 100%); /* Gradient background */
-            color: #FFFFFF; /* White text color for better contrast */
+            background: linear-gradient(135deg, #1F1C2C 0%, #928DAB 100%);
+            color: #FFFFFF;
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -19,7 +19,7 @@
         }
         .container {
             text-align: center;
-            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background for better readability */
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 10px;
             width: 100%;
@@ -30,7 +30,7 @@
             margin-bottom: 20px;
         }
         .stock-table, .stock-table th, .stock-table td {
-            border: 1px solid #FFFFFF; /* White border for better visibility */
+            border: 1px solid #FFFFFF;
             border-collapse: collapse;
             padding: 8px;
             text-align: center;
@@ -38,13 +38,13 @@
         .stock-table {
             width: 100%;
             margin: 20px 0;
-            overflow-x: auto; /* Enable horizontal scrolling */
+            overflow-x: auto;
         }
         .form-container, .password-container {
             margin: 20px 0;
         }
         .order-button, .show-form-button {
-            background-color: #FF5733; /* Orange color */
+            background-color: #FF5733;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -57,17 +57,17 @@
             border-radius: 5px;
         }
         .order-button:hover, .show-form-button:hover {
-            background-color: #C70039; /* Darker shade on hover */
+            background-color: #C70039;
         }
         .form-container {
-            display: none; /* Hide the form by default */
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="https://lh3.googleusercontent.com/drive-viewer/AKGpihZwk5DjrsFynb1Oasj4giFi2xlxJodeYknzH1ZOHF4v4h4asOH4XC_UJAArpmLBKIBXK4NasFrlt0jV0xxcCK5KqF6G2U92c4s=s2560" alt="Logo" class="logo">
-        <h1>Hairi Shope Online</h1>
+        <h1>Hairi Online Shop</h1>
         
         <div class="password-container" id="password-container">
             <label for="password">Enter Password to Update Stock: </label>
@@ -88,7 +88,7 @@
             <button onclick="updateStock()">Enter</button>
         </div>
         
-        <table class="stock-table">
+        <table class="stock-table" id="stock-table">
             <tr>
                 <th>Item Code</th>
                 <th>Stock Quantity</th>
@@ -141,6 +141,7 @@
     </div>
 
     <script>
+        // Function to check the password
         function checkPassword() {
             var password = document.getElementById("password").value;
             if (password === "hairi123") {
@@ -151,12 +152,14 @@
             }
         }
 
+        // Function to update stock and save to local storage
         function updateStock() {
             var itemCode = document.getElementById("item-code").value.toUpperCase();
             var itemQuantity = parseInt(document.getElementById("item-quantity").value);
 
             if (document.getElementById(itemCode)) {
                 document.getElementById(itemCode).innerText = itemQuantity;
+                saveToLocalStorage(itemCode, itemQuantity);
                 alert("Stock updated for " + itemCode);
                 updateTotalStock();
             } else {
@@ -164,6 +167,24 @@
             }
         }
 
+        // Function to save stock to local storage
+        function saveToLocalStorage(itemCode, itemQuantity) {
+            var stockData = JSON.parse(localStorage.getItem('stockData')) || {};
+            stockData[itemCode] = itemQuantity;
+            localStorage.setItem('stockData', JSON.stringify(stockData));
+        }
+
+        // Function to load stock from local storage
+        function loadFromLocalStorage() {
+            var stockData = JSON.parse(localStorage.getItem('stockData')) || {};
+            for (var itemCode in stockData) {
+                if (document.getElementById(itemCode)) {
+                    document.getElementById(itemCode).innerText = stockData[itemCode];
+                }
+            }
+        }
+
+        // Function to update total stock value
         function updateTotalStock() {
             var totalStock = 0;
             document.querySelectorAll('.stock-table td[id]').forEach(function(element) {
@@ -172,7 +193,11 @@
             document.getElementById("current-stock").value = totalStock;
         }
 
-        updateTotalStock(); // Initialize the total stock value
+        // Load stock data from local storage on page load
+        window.onload = function() {
+            loadFromLocalStorage();
+            updateTotalStock();
+        };
     </script>
 </body>
 </html>
