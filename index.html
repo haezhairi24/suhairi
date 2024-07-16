@@ -93,7 +93,6 @@
                 <th>Item Code</th>
                 <th>Stock Quantity</th>
             </tr>
-            <!-- Your stock items here -->
         </table>
 
         <button class="order-button" onclick="location.href='https://wa.me/60137914798'">Order Sekarang</button>
@@ -116,13 +115,11 @@
             var itemCode = document.getElementById("item-code").value.toUpperCase();
             var itemQuantity = parseInt(document.getElementById("item-quantity").value);
 
-            if (document.getElementById(itemCode)) {
-                document.getElementById(itemCode).innerText = itemQuantity;
+            if (itemCode && !isNaN(itemQuantity)) {
                 saveStock(itemCode, itemQuantity);
                 alert("Stock updated for " + itemCode);
-                updateTotalStock();
             } else {
-                alert("Invalid item code");
+                alert("Invalid input");
             }
         }
 
@@ -134,6 +131,7 @@
             .then(data => {
                 if (data.status === 'success') {
                     console.log('Stock updated successfully');
+                    loadStock(); // Reload the stock after update
                 } else {
                     console.error('Error updating stock:', data.message);
                 }
@@ -144,20 +142,20 @@
             fetch(scriptURL + '?action=get')
                 .then(response => response.json())
                 .then(data => {
+                    const table = document.getElementById('stock-table');
+                    // Clear existing rows except the header
+                    table.querySelectorAll('tr:not(:first-child)').forEach(row => row.remove());
+
                     for (var itemCode in data) {
-                        if (document.getElementById(itemCode)) {
-                            document.getElementById(itemCode).innerText = data[itemCode];
-                        } else {
-                            var row = document.createElement('tr');
-                            var codeCell = document.createElement('td');
-                            var quantityCell = document.createElement('td');
-                            codeCell.innerText = itemCode;
-                            quantityCell.innerText = data[itemCode];
-                            quantityCell.id = itemCode;
-                            row.appendChild(codeCell);
-                            row.appendChild(quantityCell);
-                            document.getElementById('stock-table').appendChild(row);
-                        }
+                        var row = document.createElement('tr');
+                        var codeCell = document.createElement('td');
+                        var quantityCell = document.createElement('td');
+                        codeCell.innerText = itemCode;
+                        quantityCell.innerText = data[itemCode];
+                        quantityCell.id = itemCode;
+                        row.appendChild(codeCell);
+                        row.appendChild(quantityCell);
+                        table.appendChild(row);
                     }
                     updateTotalStock();
                 });
